@@ -1,0 +1,160 @@
+---
+title: "assignment1"
+author: "nikunjgoel"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Exercise 1
+**Install R and RStudio (optional) now.**
+
+I installed R and RStudio
+
+### Exercise 2
+**Install xts and consequently zoo now.**
+
+```{r,eval=TRUE}
+library(xts)
+```
+
+### Exercise 3
+**Install the most recent version of astsa from Github.**
+
+```{r,eval=TRUE}
+library(astsa)
+```
+
+### Exercise 4
+**Explain what you get if you do this: ( 1 : 20 / 10 ) %% 1**
+```{r, eval=TRUE}
+(1:20/10)%%1
+```
+
+'1:20' Gave us 20 numbers starting with 1 and ending at 20 with an increment of 1. <br />
+'/10' Divided all the 20 numbers with 10
+<br />
+'%% 1' Gave us a remainder of when dividing by 1.
+
+### Exercise 5
+**Verify that 1/ i = − i where i = √ − 1 .**
+```{r, eval=TRUE}
+1/1i
+```
+
+Answer is 0-1i which is of the form $a + bi$ <br />
+So b is -1.
+
+### Exercise 6
+```{r, eval=TRUE}
+exp(1i*pi)
+```
+
+### Exercise 7 
+**Calculate these four numbers: cos ( π /2 ) , cos ( π ) , cos ( 3 π /2 ) , cos ( 2 π ) .**
+```{r, eval=TRUE}
+cosseq <- ( pi * 1 : 4 / 2 )
+cos(cosseq)
+```
+
+### Exercise 8
+**What is the difference between these two lines? 0 = x = y 0-> x-> y **
+```{r, eval=FALSE}
+0=x=y
+0->x->y
+```
+It gives an error on the first statement and second statement says $x = 0$ and $y = 0$
+
+### Exercise 9
+**Why was y+z above the vector (10, 7, 4) and why is there a warning?**
+```{r,eval=TRUE}
+x = c ( 1 , 2 , 3 , 4 ); y = c ( 2 , 4 ); z = c ( 8 , 3 , 2 )
+y + z
+```
+Because y is just 2 elements and z is 3 elements. <br />
+interpreter added 2 + 8 and 4+3 and left 2 as it is.
+
+### Exercise 10
+**Create a directory that you will use for the course and use the tricks previously mentioned to make it your working directory (or use the default if you don’t care). Load astsa and use help to find out what’s in the data file cpg . Write cpg as text to your working directory.**
+
+```{r, eval=TRUE}
+library(astsa)
+?cpg
+write(cpg,file ='zzz.txt',ncolumns=1)
+```
+
+### Exercise 11
+Find the file zzz.txt previously created (leave it there for now). Solution: In RStudio , use the Files tab. Otherwise, go to your working directory: getwd ()
+```{r,eval=TRUE}
+```
+
+### Exercise 12
+Scan and view the data in the file zzz.txt that you previously created.
+```{r,eval=TRUE}
+(cost_per_gig = scan("zzz.txt"))
+```
+
+### Exercise 13
+Make two vectors, say a with odd numbers and b with even numbers between 1 and 10. Then, use cbind to make a matrix, say x from a and b . Afterthat, display each column of x separately.
+
+```{r,eval=TRUE}
+a = seq(1,10,by=2)
+b = seq(2,10,by=2)
+x <- cbind(a,b)
+x[,1]
+x[,2]
+```
+
+
+### Exercise 14
+Generate 100 standard normals and draw a boxplot of the results when there are at least two displayed outliers (keep trying until you get two).
+
+```{r,eval=TRUE}
+set.seed(911)
+boxplot(rnorm(100))
+```
+
+
+### Exercise 15
+Write a simple function to return, for numbers x and y , the first input raised to the power of the second input, and then use it to find the square root of 25.
+
+```{r,eval=TRUE}
+exercise15 <- function(x,y){x^y}
+exercise15(25,0.5)
+```
+
+
+### Exercise 16
+Add red horizontal and vertical dashed lines to the previously generated graph to show that the fitted line goes through the point (x,y).
+```{r,eval=TRUE}
+set.seed(666)
+x = rnorm(10)
+y = 1 + 2*x + rnorm(10)
+summary(fit <- lm(y~x))
+plot(x,y)
+abline(fit, col=4)
+abline ( h = mean ( y ), col = 2 , lty = 2 )
+abline ( v = mean ( x ), col = 2 , lty = 2 )
+```
+
+### Exercise 17
+Rerun the previous example of mortality on pollution but without making a data frame.
+
+```{r,eval=TRUE}
+tsp(UnempRate)
+ded = ts.intersect (cmort,part,part4 = lag ( part ,-4))
+part4 <- lag(part,-4)
+summary(fit <- lm(cmort ~ part + part4, na.action = NULL))
+```
+
+### Exercise 18
+```{r,eval=TRUE}
+par(mfrow=c(2,1))
+tsplot(sunspotz, type="o")
+tsplot(lynx, type="o")
+```
+
+Data is doing /|.

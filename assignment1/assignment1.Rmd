@@ -66,7 +66,7 @@ cos(cosseq)
 0=x=y
 0->x->y
 ```
-It gives an error on the first statement and second statement says $x = 0$ and $y = 0$
+It gives an error on the first statement and second statement says $x = 0$ and $y = 0$. $=$ does not support left side assignments.
 
 ### Exercise 9
 **Why was y+z above the vector (10, 7, 4) and why is there a warning?**
@@ -75,7 +75,7 @@ x = c ( 1 , 2 , 3 , 4 ); y = c ( 2 , 4 ); z = c ( 8 , 3 , 2 )
 y + z
 ```
 Because y is just 2 elements and z is 3 elements. <br />
-interpreter added 2 + 8 and 4+3 and left 2 as it is.
+interpreter added 2 + 8 and 4+3. For the last element in Z it looped y array again.
 
 ### Exercise 10
 **Create a directory that you will use for the course and use the tricks previously mentioned to make it your working directory (or use the default if you don’t care). Load astsa and use help to find out what’s in the data file cpg . Write cpg as text to your working directory.**
@@ -144,8 +144,6 @@ abline ( v = mean ( x ), col = 2 , lty = 2 )
 Rerun the previous example of mortality on pollution but without making a data frame.
 
 ```{r,eval=TRUE}
-tsp(UnempRate)
-ded = ts.intersect (cmort,part,part4 = lag ( part ,-4))
 part4 <- lag(part,-4)
 summary(fit <- lm(cmort ~ part + part4, na.action = NULL))
 ```
@@ -157,4 +155,4 @@ tsplot(sunspotz, type="o")
 tsplot(lynx, type="o")
 ```
 
-Data is doing /|.
+Graph is showing that there is a incremental rise of data and steep decrease of data.

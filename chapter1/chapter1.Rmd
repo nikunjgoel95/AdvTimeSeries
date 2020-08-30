@@ -1,0 +1,59 @@
+---
+title: "chapter1"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Loading libraries
+
+```{r,eval=TRUE}
+library(astsa)
+```
+
+## Problems 1.1
+
+### Part a)
+```{r,eval=TRUE}
+set.seed(90210)
+w = rnorm(150)
+x = filter(w, filter=c(0,-0.9),method="recursive")[-(1:50)]
+v = filter(x,sides = 1,filter = rep(1/4,4))
+tsplot(x)
+lines(v,type = 'l',lty = 2)
+```
+
+### Part b)
+```{r,eval=TRUE}
+set.seed(90210)
+t = 1:100
+cs = 2*cos((2*pi*t)/4)
+w = rnorm(100)
+x = cs + w
+v = filter(x,sides = 1,filter = rep(1/4,4))
+tsplot(x)
+lines(v,type = 'l',lty = 2)
+```
+
+### Part c)
+```{r,eval=TRUE}
+x = log(jj)
+v = filter(x,sides = 1,filter = rep(1/4,4))
+tsplot(x)
+lines(v,type = 'l',lty = 2)
+```
+
+
+### Part d)
+
+What is seasonal adjustment?
+
+Seasonal adjustment is a statistical technique that attempts to measure and remove the influences of predictable seasonal patterns.
+
+
+### Part e)
+
+The main learning from this exercise was to smooth out the noise of the time series data to better understand the trend. 
+

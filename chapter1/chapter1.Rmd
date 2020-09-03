@@ -56,7 +56,7 @@ Seasonal adjustment is a statistical technique that attempts to measure and remo
 
 ### Part e)
 
-The main learning from this exercise was to smooth out the noise of the time series data to better understand the trend. 
+The main learning from this exercise was to smooth out the noise of the time series data to better understand the trend.
 
 ## Problem 1.3
 
@@ -75,12 +75,13 @@ for (number in numberOfLoops)
 ### Part b)
 
 ```{r,eval=TRUE}
+set.seed(123)
 par(mfrow = c(3,3))
 numberOfLoops <- 1:9
 for (number in numberOfLoops)
 {
   w = rnorm(500)
-  x = filter(w,sides=1,filter=rep(1/4,4))
+  x = filter(w,sides=2,filter=rep(1/3,3))
   tsplot(x)
 }
 ```
@@ -88,7 +89,7 @@ for (number in numberOfLoops)
 
 ### Part c)
 
-Difference between the two graphs is that
+Difference between the two graphs is that plots in figure b) mean oscillates around zero and figure a) is random walk which is random from the previous value.
 
 
 ## Problem 1.4
@@ -99,12 +100,17 @@ Difference between the two graphs is that
 tsplot(gdp)
 ```
 
+This trend looks closer to random walk with drift.
+
 ### Part b)
 
 ```{r, eval=TRUE}
-tsplot(diff(log(gdp)), type = "o", col=4, ylab="GDP Growth")
+tsplot(diff(log(gdp)), type = "o", col=3, ylab="GDP Growth")
 points(diff(gdp)/lag(gdp,-1), pch=3, col=2)
 ```
 
+Both are giving similar results but the method with the log gives us more stable numerical values.
+
 ### Part c)
 
+The growth of GDP looks similar to auto regression with added white noise.

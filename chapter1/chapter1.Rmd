@@ -109,7 +109,7 @@ tsplot(diff(log(gdp)), type = "o", col=3, ylab="GDP Growth")
 points(diff(gdp)/lag(gdp,-1), pch=3, col=2)
 ```
 
-Both are giving similar results but the method with the log gives us more stable numerical values.
+Both are giving similar results but logs are associated with percentage of growth, so an additive trend, whereas actual growth relates to multiplicative trend.
 
 ### Part c)
 

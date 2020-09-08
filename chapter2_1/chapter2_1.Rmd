@@ -1,0 +1,17 @@
+---
+title: "chapter2_1"
+author: "Nikunj Goel"
+date: "9/8/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Including libraries
+
+```{r}
+library(astsa)
+```
+

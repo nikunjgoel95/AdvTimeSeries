@@ -2,7 +2,10 @@
 title: "chapter2_1"
 author: "Nikunj Goel"
 date: "9/8/2020"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -14,4 +17,170 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(astsa)
 ```
+
+## 2.1
+
+In stationarity the statistical properties of a process generating a time series do not change over time. It is important because they are easier to analyze, model and investigate. These processes should be possible to predict, as the way they change is predictable.
+
+## 2.2
+
+### Part a)
+
+Mean of the time series $x_{t}$ would be
+
+$$\mu_{x,t} = \text E(x_{t}) = \beta_{0}t$$
+
+which is not independent of time. It violates the first rule of time series stationarity and is not *Stationary*.
+
+### Part b)
+
+$$y_{t} = x_{t} - x_{t-1}$$
+
+Replacing the value of $x_{t}$ in the equation above.
+
+$$
+y_{t} = (\beta_{0}+\beta_{1}t+w_{t}) - (\beta_{0}+\beta_{1}(t-1)+w_{t-1})\\
+\\
+y_{t} = \beta_{1} + w_{t} - w_{t-1}\\
+\\
+\mu_{y,t} = \text E(y_{t}) = \beta_{1}
+$$
+
+The mean is constant and does not depend on time $t$.
+
+$$
+cov(y_{t+h},y_{t}) = cov((w_{t+h} - w_{t+h-1} + \beta_{1}),(w_{t} - w_{t-1} + \beta_{1}))\\
+$$
+The covariance of (constant,variable) and covariance of (constant,constant) is zero. So the equation reduces to
+$$
+cov(y_{t+h},y_{t}) = cov(w_{t+h},w_{t}) - cov(w_{t+h},w_{t-1}) -  cov(w_{t+h -1},w_{t}) + cov(w_{t+h-1},w_{t-1})
+$$
+
+For h=0
+
+$$2\sigma_{w}^2$$
+
+For h=1 and h=-1
+
+$$-\sigma_{w}^2$$
+
+For other h 
+
+$$0$$
+
+Which proves that the process is stationary.
+
+### Part c)
+
+$$
+\mu_{v,t} = 1/3E[(\beta_{0} + \beta_{1}(t-1) + w_{t-1} + \beta_{0} + \beta_{1}(t) + w_t + \beta_{0} + \beta_{1}(t+1) + w_{t+1})]
+\\
+\mu_{v,t} = 1/3E[(3\beta_{0} + 3\beta_{1}t + w_{t-1} + w_{t} + w_{t+1})]
+\\
+\mu_{v,t} = \beta_{0} + \beta_{1}t
+$$
+
+
+## Part 2.3
+
+
+## Part 2.4
+
+### Part a)
+
+$$
+x_{t} = \phi.x_{t-1} + w_{t}
+\\
+\mu_{x,t} = \phi.E(x_{t-1}) + E(w_{t})
+\\
+$$
+
+As $x_{t-1}$ is uncorrelated with $w_{t}$
+$$
+\mu_{x,t} = 0
+$$
+
+### Part b)
+
+$$
+\gamma_{x}(0) = var(x_{t}) = var(\phi.x_{t-1} + w_{t})
+\\
+\gamma_{x}(0) = var(x_{t}) = var(\phi.x_{t-1}) + var(w_{t}) + 2cov(\phi.x_{t-1},w_{t})
+\\
+\gamma_{x}(0) = var(x_{t}) = \phi^2var(x_{t-1}) + var(w_{t})
+\\
+\gamma_{x}(0) =  var(x_{t}) = \phi^2\gamma_{x}(0) + 1
+\\
+\gamma_{x}(0) = 1/(1-\phi^2)
+$$
+
+### Part c)
+
+For the values to make sense $|\phi| < 1$
+
+### Part d)
+
+$$
+\gamma_x(1) = cov(x_{t},x_{t-1}) = cov(\phi.x_{t-1} + w_{t},x_{t-1})\\
+\\
+\gamma_x(1) = cov(\phi.x_{t-1}, x_{t-1}) = \phi\gamma_{x}(0)\\
+\\
+\rho_x(1) = \dfrac{\gamma_x(1)}{\gamma_x(0)} = \phi
+$$
+
+
+## Part 2.5
+
+### Part a)
+
+Using the equation
+
+$$x_{t} = \phi + x_{t-1} + w_{t} $$
+putting t=1
+
+$$x_{1} = \phi + w_{1}$$
+
+Assuming it be true for $$x_{t-1} = (t-1)\rho + \sum_{k=1}^{t-1} w_{k}$$
+
+$$
+x_{t} = \rho + (t-1)\rho + \sum_{k=1}^{t-1} w_{k} + w_{t}
+\\
+x_{t} = (t)\rho + \sum_{k=1}^{t} w_{k}
+\\
+x_{t+1}  = \rho + t\rho + \sum_{k=1}^{t+1} w_{k}
+$$
+
+By mathematical induction, we can prove that the form of the term is as mentioned.
+
+
+### Part b)
+
+Mean of $x_{t}$
+
+$$
+\mu_{x,t} = \rho.t + E(\sum_{k=1}^{t+1} w_{k})
+\\
+\mu_{x,t} = \rho.t
+$$
+
+AutoCovariance of $x_{t}$
+
+$$
+cov(x_{s},x_{t}) = E[(x_{s} - E(x_{s}))(x_{t} - E(x_{t}))]
+\\
+cov(x_{s},x_{t}) = E[(x_{s} - )]
+$$
+
+### Part c)
+
+Mean of $x_{t}$ depends on time and doesn't follow the first rule of stationarity.
+
+### Part d)
+
+
+
+
+
+
+
 

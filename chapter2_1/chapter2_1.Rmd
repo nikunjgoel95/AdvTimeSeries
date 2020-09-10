@@ -3,9 +3,9 @@ title: "chapter2_1"
 author: "Nikunj Goel"
 date: "9/8/2020"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -231,7 +231,7 @@ cov(x_{t+h},x_{t}) = E[(x_{t+h} - E(x_{t+h}))(x_{t} - E(x_{t}))]
 \\
 cov(x_{t+h},x_{t}) = cov(\sum_{k=1}^{t+h} w_{k},\sum_{k=1}^{t} w_{k})
 \\
-cov(x_{t+h},x_{t}) = t.\sigma_{w}^2
+cov(x_{t+h},x_{t}) = min(t,t+h).\sigma_{w}^2
 $$
 
 ### Part c)
@@ -253,7 +253,7 @@ $$
 \\
 \rho_{x}(t-1,t) = 1
 $$
-This implies that as time goes on $\infty$ the ACF loses it's power.
+This implies that as time goes on $\infty$ the ACF becomes 1 and it implies that the relative difference between t-1 and t is very small.
 
 ### Part e)
 
@@ -283,5 +283,9 @@ $$
 \text when \ h=0
 \\
 \gamma(t+h,t) = \sigma^2
+\\
+\text when \ h \ is \ not \ 0
+\\
+\gamma(t+h,t) = 0
 $$
 This Satisfies both stationary conditions. So it is stationary.

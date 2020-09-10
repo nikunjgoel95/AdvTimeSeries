@@ -1666,7 +1666,7 @@ summary {
 <div id="part-a" class="section level3">
 <h3>Part a)</h3>
 <p>Mean of the time series <span class="math inline">\(x_{t}\)</span> would be</p>
-<p><span class="math display">\[\mu_{x,t} = \text E(x_{t}) = \beta_{0}t\]</span></p>
+<p><span class="math display">\[\mu_{x,t} = \text E(x_{t}) = \beta_{0} + \beta_{1}t\]</span></p>
 <p>which is not independent of time. It violates the first rule of time series stationarity and is not <em>Stationary</em>.</p>
 </div>
 <div id="part-b" class="section level3">
@@ -1707,6 +1707,44 @@ cov(y_{t+h},y_{t}) = cov(w_{t+h},w_{t}) - cov(w_{t+h},w_{t-1}) -  cov(w_{t+h -1}
 </div>
 <div id="part-2.3" class="section level2">
 <h2>Part 2.3</h2>
+<p>The equation is <span class="math display">\[
+x_{t} = \dfrac{1}{4}(w_{t-1} + 2w_{t} + w_{t+1})
+\]</span> AutoCovariance of the equation is</p>
+<p><span class="math display">\[
+cov(x_{t+h},x_{t}) = [\dfrac{1}{4}(w_{t+h-1} + 2w_{t+h} + w_{t+h+1}),\dfrac{1}{4}(w_{t-1} + 2w_{t} + w_{t+1})]
+\\
+=\dfrac{1}{16}[(w_{t+h-1} + 2w_{t+h} + w_{t+h+1}),(w_{t-1} + 2w_{t} + w_{t+1})]
+\\
+\text for \ h=0
+\\
+cov(x_{t+h},x_{t}) = \dfrac{1}{16}[6\sigma_{w}^2]
+\\
+\text for \ h=\pm 1 
+\\
+cov(x_{t+h},x_{t}) = \dfrac{1}{16}[4\sigma_{w}^2]
+\\
+\text for \ h=\pm 2
+\\
+cov(x_{t+h},x_{t}) = \dfrac{1}{16}[\sigma_{w}^2]
+\]</span> As we can see, <span class="math display">\[
+\mu_{x,t} = \dfrac{1}{4}E(w_{t-1} + 2w_{t} + w_{t+1})
+\\
+= 0
+\]</span> As the mean of the time series is time independent and the CoVoriance depends on the time difference So this means the the time series <span class="math inline">\(x_{t}\)</span> is <strong>stationary</strong>.</p>
+<p>So AutoCorrelation is</p>
+<p><span class="math display">\[
+\rho_x(h) = \dfrac{\gamma(h)}{\gamma(0)}
+\\
+\rho_x(h) = \begin{cases}
+1, &amp; \text{h=0}
+\\
+\frac{4}{6}, &amp; \text{h=$\pm$1}
+\\
+\frac{1}{6}, &amp; \text{h=$\pm$2}
+\\
+0, &amp; \text{otherwise}
+\end{cases}
+\]</span></p>
 </div>
 <div id="part-2.4" class="section level2">
 <h2>Part 2.4</h2>
@@ -1718,7 +1756,7 @@ x_{t} = \phi.x_{t-1} + w_{t}
 \mu_{x,t} = \phi.E(x_{t-1}) + E(w_{t})
 \\
 \]</span></p>
-<p>As <span class="math inline">\(x_{t-1}\)</span> is uncorrelated with <span class="math inline">\(w_{t}\)</span> <span class="math display">\[
+<p>As <span class="math inline">\(x_{t-1}\)</span> is uncorrelated with <span class="math inline">\(w_{t}\)</span> and <span class="math inline">\(phi\)</span> cannot be one. So only condition that will satisfy is :- <span class="math display">\[
 \mu_{x,t} = 0
 \]</span></p>
 </div>
@@ -1733,7 +1771,7 @@ x_{t} = \phi.x_{t-1} + w_{t}
 \\
 \gamma_{x}(0) =  var(x_{t}) = \phi^2\gamma_{x}(0) + 1
 \\
-\gamma_{x}(0) = 1/(1-\phi^2)
+\gamma_{x}(0) = \dfrac{1}{(1-\phi^2)}
 \]</span></p>
 </div>
 <div id="part-c-1" class="section level3">
@@ -1755,21 +1793,41 @@ x_{t} = \phi.x_{t-1} + w_{t}
 <h2>Part 2.5</h2>
 <div id="part-a-2" class="section level3">
 <h3>Part a)</h3>
-<p>Using the equation, putting t=1</p>
-<p><span class="math inline">\(x_{1} = \phi + w_{1}\)</span></p>
-<p>Assuming it be true for <span class="math inline">\(x_{t-1} = (t-1)\rho + \sum_{k=1}^{t-1} w_{k}\)</span></p>
-<p><span class="math inline">\(x_{t} = \rho + (t-1)\rho + \sum_{k=1}^{t-1} w_{k} + w_{t}\)</span></p>
-<p><span class="math inline">\(x_{t+1} = \rho + t\rho + \sum_{k=1}^{t+1} w_{k}\)</span></p>
-<p>By mathematical induction, we can prove that the form of the term is as mentioned. Hence Proved.</p>
+<p>Using the equation</p>
+<p><span class="math display">\[x_{t} = \delta + x_{t-1} + w_{t} \]</span> putting t=1</p>
+<p><span class="math display">\[
+x_{1} = \delta + w_{1}
+\\
+x_{2} = 2\delta + w_{1} + w_{2}
+\\
+x_{3} = 3\delta + w_{1} + w_{2} + w_{3}
+\]</span></p>
+<p>Assuming it be true for <span class="math display">\[x_{t-1} = (t-1)\delta + \sum_{k=1}^{t-1} w_{k}\]</span></p>
+<p><span class="math display">\[
+x_{t} = \delta + (t-1)\delta + \sum_{k=1}^{t-1} w_{k} + w_{t}
+\\
+x_{t} = (t)\delta + \sum_{k=1}^{t} w_{k}
+\\
+x_{t+1}  = \delta + t\delta + \sum_{k=1}^{t+1} w_{k}
+\]</span></p>
+<p>By mathematical induction, we can prove that the form of the term is as mentioned.</p>
 </div>
 <div id="part-b-2" class="section level3">
 <h3>Part b)</h3>
 <p>Mean of <span class="math inline">\(x_{t}\)</span></p>
-<p><span class="math inline">\(\mu_{x,t} = \rho.t + E(\sum_{k=1}^{t+1} w_{k})\)</span></p>
-<p><span class="math inline">\(\mu_{x,t} = \rho.t\)</span></p>
+<p><span class="math display">\[
+\mu_{x,t} = \delta.t + E(\sum_{k=1}^{t} w_{k})
+\\
+\mu_{x,t} = \delta.t
+\]</span></p>
 <p>AutoCovariance of <span class="math inline">\(x_{t}\)</span></p>
-<p><span class="math inline">\(cov(x_{s},x_{t}) = E[(x_{s} - E(x_{s}))(x_{t} - E(x_{t}))]\)</span></p>
-<p><span class="math inline">\(cov(x_{s},x_{t}) = E[(x_{s} - )]\)</span></p>
+<p><span class="math display">\[
+cov(x_{t+h},x_{t}) = E[(x_{t+h} - E(x_{t+h}))(x_{t} - E(x_{t}))]
+\\
+cov(x_{t+h},x_{t}) = cov(\sum_{k=1}^{t+h} w_{k},\sum_{k=1}^{t} w_{k})
+\\
+cov(x_{t+h},x_{t}) = t.\sigma_{w}^2
+\]</span></p>
 </div>
 <div id="part-c-2" class="section level3">
 <h3>Part c)</h3>
@@ -1777,6 +1835,22 @@ x_{t} = \phi.x_{t-1} + w_{t}
 </div>
 <div id="part-d-1" class="section level3">
 <h3>Part d)</h3>
+<p><span class="math display">\[
+\rho_{x}(t-1,t) = \dfrac{\gamma_{x}(t-1,t)}{\sqrt{\gamma_x(t-1,t-1)\gamma_x(t,t)}}
+\\
+\rho_{x}(t-1,t) = \dfrac{cov(x_{t},x_{t-1})}{\sqrt{cov(x_{t-1},x_{t-1})cov(x_{t},x_{t})}}
+\\
+\rho_{x}(t-1,t) = \dfrac{(t-1)\sigma_{w}^2}{\sqrt{(t-1)\sigma_{w}^2(t)\sigma_{w}^2}}
+\\
+\rho_{x}(t-1,t) = \sqrt{\dfrac{t-1}{t}}
+\\
+\rho_{x}(t-1,t) = \lim_{t \to +\infty} \sqrt{1-\dfrac{1}{t}}
+\\
+\rho_{x}(t-1,t) = 1
+\]</span></p>
+</div>
+<div id="part-e" class="section level3">
+<h3>Part e)</h3>
 </div>
 </div>
 

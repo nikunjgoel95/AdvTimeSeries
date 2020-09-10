@@ -3,9 +3,9 @@ title: "chapter2_1"
 author: "Nikunj Goel"
 date: "9/8/2020"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -28,7 +28,7 @@ In stationarity the statistical properties of a process generating a time series
 
 Mean of the time series $x_{t}$ would be
 
-$$\mu_{x,t} = \text E(x_{t}) = \beta_{0}t$$
+$$\mu_{x,t} = \text E(x_{t}) = \beta_{0} + \beta_{1}t$$
 
 which is not independent of time. It violates the first rule of time series stationarity and is not *Stationary*.
 
@@ -81,10 +81,65 @@ $$
 $$
 
 
-## Part 2.3
+## 2.3
 
+The equation is
+$$
+x_{t} = \dfrac{1}{4}(w_{t-1} + 2w_{t} + w_{t+1})
+$$
+AutoCovariance of the equation is
 
-## Part 2.4
+$$
+cov(x_{t+h},x_{t}) = [\dfrac{1}{4}(w_{t+h-1} + 2w_{t+h} + w_{t+h+1}),\dfrac{1}{4}(w_{t-1} + 2w_{t} + w_{t+1})]
+\\
+=\dfrac{1}{16}[(w_{t+h-1} + 2w_{t+h} + w_{t+h+1}),(w_{t-1} + 2w_{t} + w_{t+1})]
+\\
+\text for \ h=0
+\\
+cov(x_{t+h},x_{t}) = \dfrac{1}{16}[6\sigma_{w}^2]
+\\
+\text for \ h=\pm 1 
+\\
+cov(x_{t+h},x_{t}) = \dfrac{1}{16}[4\sigma_{w}^2]
+\\
+\text for \ h=\pm 2
+\\
+cov(x_{t+h},x_{t}) = \dfrac{1}{16}[\sigma_{w}^2]
+$$
+As we can see,
+$$
+\mu_{x,t} = \dfrac{1}{4}E(w_{t-1} + 2w_{t} + w_{t+1})
+\\
+= 0
+$$
+As the mean of the time series is time independent and the CoVoriance depends on the time difference So this means the the time series $x_{t}$ is **stationary**.
+
+So AutoCorrelation is
+
+$$
+\rho_x(h) = \dfrac{\gamma(h)}{\gamma(0)}
+\\
+\rho_x(h) = \begin{cases}
+1, & \text{h=0}
+\\
+\frac{4}{6}, & \text{h=$\pm$1}
+\\
+\frac{1}{6}, & \text{h=$\pm$2}
+\\
+0, & \text{otherwise}
+\end{cases}
+$$
+
+```{r}
+ACF = c(0,0,0,1,4,6,4,1,0,0,0)/6
+LAG = -5:5
+tsplot(LAG,ACF,type='h',lwd=3,xlab="LAG")
+abline(h=0)
+points(LAG[-(4:8)],ACF[-(4:8)], pch=20)
+axis(1,at=seq(-5,5, by=2))
+```
+
+## 2.4
 
 ### Part a)
 
@@ -95,7 +150,7 @@ x_{t} = \phi.x_{t-1} + w_{t}
 \\
 $$
 
-As $x_{t-1}$ is uncorrelated with $w_{t}$
+As $x_{t-1}$ is uncorrelated with $w_{t}$ and $phi$ cannot be one. So only condition that will satisfy is :-
 $$
 \mu_{x,t} = 0
 $$
@@ -111,7 +166,7 @@ $$
 \\
 \gamma_{x}(0) =  var(x_{t}) = \phi^2\gamma_{x}(0) + 1
 \\
-\gamma_{x}(0) = 1/(1-\phi^2)
+\gamma_{x}(0) = \dfrac{1}{(1-\phi^2)}
 $$
 
 ### Part c)
@@ -129,25 +184,31 @@ $$
 $$
 
 
-## Part 2.5
+## 2.5
 
 ### Part a)
 
 Using the equation
 
-$$x_{t} = \phi + x_{t-1} + w_{t} $$
+$$x_{t} = \delta + x_{t-1} + w_{t} $$
 putting t=1
 
-$$x_{1} = \phi + w_{1}$$
+$$
+x_{1} = \delta + w_{1}
+\\
+x_{2} = 2\delta + w_{1} + w_{2}
+\\
+x_{3} = 3\delta + w_{1} + w_{2} + w_{3}
+$$
 
-Assuming it be true for $$x_{t-1} = (t-1)\rho + \sum_{k=1}^{t-1} w_{k}$$
+Assuming it be true for $$x_{t-1} = (t-1)\delta + \sum_{k=1}^{t-1} w_{k}$$
 
 $$
-x_{t} = \rho + (t-1)\rho + \sum_{k=1}^{t-1} w_{k} + w_{t}
+x_{t} = \delta + (t-1)\delta + \sum_{k=1}^{t-1} w_{k} + w_{t}
 \\
-x_{t} = (t)\rho + \sum_{k=1}^{t} w_{k}
+x_{t} = (t)\delta + \sum_{k=1}^{t} w_{k}
 \\
-x_{t+1}  = \rho + t\rho + \sum_{k=1}^{t+1} w_{k}
+x_{t+1}  = \delta + t\delta + \sum_{k=1}^{t+1} w_{k}
 $$
 
 By mathematical induction, we can prove that the form of the term is as mentioned.
@@ -158,17 +219,19 @@ By mathematical induction, we can prove that the form of the term is as mentione
 Mean of $x_{t}$
 
 $$
-\mu_{x,t} = \rho.t + E(\sum_{k=1}^{t+1} w_{k})
+\mu_{x,t} = \delta.t + E(\sum_{k=1}^{t} w_{k})
 \\
-\mu_{x,t} = \rho.t
+\mu_{x,t} = \delta.t
 $$
 
 AutoCovariance of $x_{t}$
 
 $$
-cov(x_{s},x_{t}) = E[(x_{s} - E(x_{s}))(x_{t} - E(x_{t}))]
+cov(x_{t+h},x_{t}) = E[(x_{t+h} - E(x_{t+h}))(x_{t} - E(x_{t}))]
 \\
-cov(x_{s},x_{t}) = E[(x_{s} - )]
+cov(x_{t+h},x_{t}) = cov(\sum_{k=1}^{t+h} w_{k},\sum_{k=1}^{t} w_{k})
+\\
+cov(x_{t+h},x_{t}) = t.\sigma_{w}^2
 $$
 
 ### Part c)
@@ -177,10 +240,48 @@ Mean of $x_{t}$ depends on time and doesn't follow the first rule of stationarit
 
 ### Part d)
 
+$$
+\rho_{x}(t-1,t) = \dfrac{\gamma_{x}(t-1,t)}{\sqrt{\gamma_x(t-1,t-1)\gamma_x(t,t)}}
+\\
+\rho_{x}(t-1,t) = \dfrac{cov(x_{t},x_{t-1})}{\sqrt{cov(x_{t-1},x_{t-1})cov(x_{t},x_{t})}}
+\\
+\rho_{x}(t-1,t) = \dfrac{(t-1)\sigma_{w}^2}{\sqrt{(t-1)\sigma_{w}^2(t)\sigma_{w}^2}}
+\\
+\rho_{x}(t-1,t) = \sqrt{\dfrac{t-1}{t}}
+\\
+\rho_{x}(t-1,t) = \lim_{t \to +\infty} \sqrt{1-\dfrac{1}{t}}
+\\
+\rho_{x}(t-1,t) = 1
+$$
+This implies that as time goes on $\infty$ the ACF loses it's power.
 
+### Part e)
 
+To make the series **Stationary** we might try differencing: 
+$$
+y_{t} = x_{t} - x_{t-1}
+\\
+y_{t} = \delta + x_{t-1} + w_{t} - x_{t-1}
+\\
+y_{t} = \delta + w_{t}
+$$
+Check Stationary
+$$
+E(y_{t}) = E(\delta + w_{t}) 
+\\
+E(y_{t}) = \delta
+$$
+Not dependent on t.
 
+ACV: 
 
-
-
-
+$$
+\gamma(t+h,t) = cov(x_{t+h},x_{t})
+\\
+\gamma(t+h,t) = cov(\delta + w_{t+h},\delta + w_{t})
+\\
+\text when \ h=0
+\\
+\gamma(t+h,t) = \sigma^2
+$$
+This Satisfies both stationary conditions. So it is stationary.

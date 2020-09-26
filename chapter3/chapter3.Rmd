@@ -1,0 +1,166 @@
+---
+title: "Untitled"
+author: "Nikunj Goel"
+date: "9/26/2020"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Loading Libraries
+
+```{r}
+library(astsa)
+```
+
+## 3.1
+
+### Part a)
+
+```{r}
+trend = time(jj) - 1970
+q = factor(cycle(jj))
+req = lm(log(jj) ~ 0 + trend + q, na.action = NULL)
+model.matrix(req)
+summary(req)
+```
+
+
+### Part b)
+
+The estimated average annual increase in the logged earnings per share is 
+$$
+q1 + q2 + q3 + q4
+$$
+which can be extracted from the summary table 
+
+```{r}
+1.052793 + 1.080916 + 1.151024 + 0.882266
+```
+
+### Part c)
+
+Average logged earning rate $q4$ - $q3$ decreases.
+```{r}
+0.882266 - 1.151024
+```
+
+The percentage of the decrease is 
+```{r}
+(0.269/1.151024) * 100
+```
+
+
+### Part d)
+
+```{r}
+trend = time(jj) - 1970
+q = factor(cycle(jj))
+req = lm(log(jj) ~ trend + q, na.action = NULL)
+summary(req)
+```
+
+Having an intercept removes the first quarter away.
+Also the intercept appears in all the quarters. It is of no use because we want to analyze all the quarters separately.
+
+### Part e)
+
+```{r}
+par(mfrow=c(1,2))
+plot(log(jj), main="plot of data and fitted value")
+lines(fitted(req), col="red") 
+plot(log(jj) - fitted(req), main="plot of residuals")
+```
+
+
+The residuals are not following any pattern hence it looks fairly white.
+The fit of the model is decent.
+
+## 3.2
+
+### Part a)
+
+```{r}
+temp = tempr - mean(tempr)
+#ded = ts.intersect(trend=time(cmort),temp,temp2=temp^2,part,partL4=lag(part,-4))
+temp2 = temp^2
+trend = time(cmort)
+fit = lm(cmort ~ trend + temp + temp2 + part + lag(part,-4), na.action = NULL)
+#fit = lm(cmort ~ ded, na.action=NULL)
+summary(fit)
+```
+
+**Some conclusion**
+
+### Part b)
+
+```{r}
+AIC(fit)/length(cmort) - log(2*pi)
+BIC(fit)/length(cmort) - log(2*pi)
+```
+
+**Some conclusion on this.**
+
+## 3.4
+
+### Part a)
+
+The equation is 
+
+$$
+x_{t} = \beta_{0} + \beta_{1}t + w_{t}
+$$
+Mean of $x_{t}$
+
+$$
+E[x_{t}] = E[\beta_{0} + \beta_{1}t + w_{t}] = \beta_{0} + \beta_{1}t
+$$
+
+It is dependent on time t, hence the series $x_{t}$ is not stationary.
+
+### Part b)
+
+The first order difference can be simplified into
+
+$$
+\Delta x_{t} = x_{t} - x_{t-1}
+\\
+= \beta_{0} + \beta_{1}t + w_{t} - [\beta_{0} + \beta_{1}(t-1) + w_{t-1}]
+\\
+= w_{t} - w_{t-1} + \beta_{1}
+$$
+Mean of the function would be
+
+$$
+E[\Delta x_{t}] = E[w_{t} - w_{t-1} + \beta_{1}]
+\\
+=\beta_{1} + E[w_{t}] - E[w_{t-1}]
+\\
+=\beta_{1}
+$$
+
+Independent of time
+
+and now Auto Covariance Function is:
+
+$$
+\gamma \Delta x_{t}(t+h,h) = Cov(x_{t+h},x_{t})
+\\
+= Cov(w_{t+h} - w_{t+h-1} + \beta_{1},w_{t} - w_{t-1} + \beta_{1})
+\\
+= Cov(w_{t+h} - w_{t+h-1},w_{t} - w_{t-1})
+\\
+\begin{cases}
+2 \sigma^2_{w}, & \text{h=0}
+\\
+-\sigma^2_{w}, & \text{|h| = 1}
+\\
+0, & \text{|h|>1}
+\end{cases}
+$$
+which is also free from t, hence $\Delta x_{t}$ is stationary.
+

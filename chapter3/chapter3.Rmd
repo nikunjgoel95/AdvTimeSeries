@@ -164,3 +164,100 @@ $$
 $$
 which is also free from t, hence $\Delta x_{t}$ is stationary.
 
+### Part c)
+
+$$
+\gamma \Delta x_{t}(t+h,h) = Cov(x_{t+h},x_{t})
+\\
+=Cov(\beta_{1} + y_{t+h} - y_{t+h-1},\beta_{1} + y_{t} - y_{t-1})
+\\
+=Cov(y_{t+h} - y_{t+h-1},y_{t} - y_{t-1})
+\\
+=Cov(y_{t+h},y_{t}) - Cov(y_{t+h},y_{t-1}) -Cov(y_{t+h-1},y_{t}) + Cov(y_{t+h-1},y_{t-1})
+\\
+=\gamma_{y}(h+1) - 2\gamma_{y}(h) + \gamma_{y}(h-1)
+$$
+which is independent of time since $y_{t}$ is stationary and $\gamma_{t}$(·)is independent of time t.
+So it is Stationary.
+
+## 3.6
+
+### Part a)
+
+```{r}
+n = length(varve)
+varve1 = varve[1:n/2]
+varve2 = varve[(n/2+1):n]
+data.frame(firstHalf = var(varve1),SecondHalf=var(varve2))
+```
+
+as we can see the sample variance in the second half of the data is significanlty larger than the first half,therefore the variance is not homogenous, hence we need to statibilize the variance by data transformation such as log(·)-transformation. Having a log transformation obviously made data closer to the normality.
+
+```{r}
+par(mfrow= c(1,2))
+hist(varve, main="raw data")
+hist(log(varve), main="log-transformed data")
+```
+
+### Part b)
+
+```{r}
+plot(log(varve), main="log-transformed data")
+```
+It doesn’t seem that there is an increasing/decreasing trend over time.
+
+### part c)
+
+```{r}
+acf(log(varve), lag.max = 20)
+```
+that the dependency in the data is very strong in close lags and dies down very slowly.
+
+### Part d)
+
+```{r}
+u = diff(log(varve), 1)
+plot(u)
+acf1(u)
+```
+
+
+
+differencing produces fairly reasonable stationary process. $u_{t}$can be interpreted as the yearly increase in the thicknesses varves.
+
+In Statistical sense it can also be smoothing.
+
+$$
+u_{t} = \Delta y_{t}
+\\
+=y_{t} - y_{t-1}
+\\
+=log(x_{t}) - log(x_{t-1})
+\\
+=log(\frac{x_{t}}{x_{t-1}})
+\\
+=log(1 + \frac{x_{t} - x_{t-1}}{x_{t-1}})
+\\
+\approx \frac{x_{t} - x_{t-1}}{x_{t-1}}
+$$
+which can be intepreted as the marginal change in the thickness varves.
+
+## 3.7
+
+```{r}
+# MA Smoothing
+wgts =c(.5,rep(1,11), .5)/12
+smooth1 =filter(gtemp, sides=2, filter=wgts)
+# Kernel Smoothing
+smooth2 =ksmooth(time(gtemp), gtemp, "normal", bandwidth=10)
+# Lowess smoothing
+smooth3 =lowess(gtemp)
+par(mfrow=c(3,1))
+plot(gtemp, type="o", ylab="MA Smoothing")
+lines(smooth1, col="red")
+plot(gtemp, type="o", ylab="Kernel Smoothing")
+lines(smooth2, col="red")
+plot(gtemp, type="o", ylab="Lowess Smoothing")
+lines(smooth3, col="red")
+```
+All methods seems to model the trend reasonably, but one needs to be careful on picking the tunning parameters such as the weights of MA smoothing, bandwitdh of the kernel smoothing, and so on.

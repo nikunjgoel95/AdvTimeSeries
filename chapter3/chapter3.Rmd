@@ -86,11 +86,12 @@ The fit of the model is decent.
 
 ```{r}
 temp = tempr - mean(tempr)
-#ded = ts.intersect(trend=time(cmort),temp,temp2=temp^2,part,partL4=lag(part,-4))
 temp2 = temp^2
 trend = time(cmort)
-fit = lm(cmort ~ trend + temp + temp2 + part + lag(part,-4), na.action = NULL)
-#fit = lm(cmort ~ ded, na.action=NULL)
+partL4 = lag(part, -4)
+
+ded = ts.intersect(cmort, trend, temp, temp2, part, partL4)
+fit = lm(cmort ~ trend + temp + temp2 + part + partL4, data = ded, na.action = NULL)
 summary(fit)
 ```
 

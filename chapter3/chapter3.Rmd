@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Chapter 3"
 author: "Nikunj Goel"
 date: "9/26/2020"
 output:
@@ -34,12 +34,12 @@ summary(req)
 
 The estimated average annual increase in the logged earnings per share is 
 $$
-q1 + q2 + q3 + q4
+trend
 $$
 which can be extracted from the summary table 
 
 ```{r}
-1.052793 + 1.080916 + 1.151024 + 0.882266
+0.167
 ```
 
 ### Part c)
@@ -95,16 +95,17 @@ fit = lm(cmort ~ trend + temp + temp2 + part + partL4, data = ded, na.action = N
 summary(fit)
 ```
 
-**Some conclusion**
+partL4 has a good significant and model has a good fit.
 
 ### Part b)
 
 ```{r}
-AIC(fit)/length(cmort) - log(2*pi)
-BIC(fit)/length(cmort) - log(2*pi)
+
+AIC(fit)/nrow(ded) - log(2*pi)
+BIC(fit)/nrow(ded) - log(2*pi)
 ```
 
-**Some conclusion on this.**
+since the AIC and BIC are lower, its a better model fit than before with the new explantory variable
 
 ## 3.4
 
@@ -176,7 +177,7 @@ $$
 \\
 =Cov(y_{t+h},y_{t}) - Cov(y_{t+h},y_{t-1}) -Cov(y_{t+h-1},y_{t}) + Cov(y_{t+h-1},y_{t-1})
 \\
-=\gamma_{y}(h+1) - 2\gamma_{y}(h) + \gamma_{y}(h-1)
+=-\gamma_{y}(h+1) + 2\gamma_{y}(h) - \gamma_{y}(h-1)
 $$
 which is independent of time since $y_{t}$ is stationary and $\gamma_{t}$(·)is independent of time t.
 So it is Stationary.
@@ -205,12 +206,16 @@ hist(log(varve), main="log-transformed data")
 ```{r}
 plot(log(varve), main="log-transformed data")
 ```
-It doesn’t seem that there is an increasing/decreasing trend over time.
+It doesn't that there is an comparable trend over time as compared to gtemp.
+
+```{r}
+ts.plot(gtemp)
+```
 
 ### part c)
 
 ```{r}
-acf(log(varve), lag.max = 20)
+acf1(log(varve))
 ```
 that the dependency in the data is very strong in close lags and dies down very slowly.
 
@@ -223,8 +228,7 @@ acf1(u)
 ```
 
 
-
-differencing produces fairly reasonable stationary process. $u_{t}$can be interpreted as the yearly increase in the thicknesses varves.
+Differencing produces fairly reasonable stationary process. $u_{t}$can be interpreted as the yearly increase in the thicknesses varves.
 
 In Statistical sense it can also be smoothing.
 
@@ -245,20 +249,72 @@ which can be intepreted as the marginal change in the thickness varves.
 
 ## 3.7
 
+
+**MA Smoothing**
 ```{r}
-# MA Smoothing
-wgts =c(.5,rep(1,11), .5)/12
-smooth1 =filter(gtemp, sides=2, filter=wgts)
-# Kernel Smoothing
-smooth2 =ksmooth(time(gtemp), gtemp, "normal", bandwidth=10)
-# Lowess smoothing
-smooth3 =lowess(gtemp)
-par(mfrow=c(3,1))
-plot(gtemp, type="o", ylab="MA Smoothing")
-lines(smooth1, col="red")
-plot(gtemp, type="o", ylab="Kernel Smoothing")
-lines(smooth2, col="red")
-plot(gtemp, type="o", ylab="Lowess Smoothing")
-lines(smooth3, col="red")
+#MA Smoothing
+culer = c(rgb(.85,.30,.12,.6), rgb(.12,.65,.85,.6))
+w = c(.5, rep(1,11), .5)/12
+gtemp_land_f = filter(gtemp_land, sides=2, filter=w)
+tsplot(gtemp_land, col=culer[1], ylim=c(-1, 1.65))
+lines(gtemp_land_f, lwd=2, col=2)
+gtemp_ocean_f = filter(gtemp_ocean, sides = 2, filter = w)
+lines(gtemp_ocean, col=culer[2])
+lines(gtemp_ocean_f, lwd=2, col=4)
 ```
+
+**Kernel Smoothing**
+```{r}
+culer = c(rgb(.85,.30,.12,.6), rgb(.12,.65,.85,.6))
+w = c(.5, rep(1,11), .5)/12
+gtemp_land_f = ksmooth(time(gtemp_land),gtemp_land,"normal", bandwidth = 12)
+tsplot(gtemp_land, col=culer[1], ylim=c(-1, 1.65))
+lines(gtemp_land_f, lwd=2, col=2)
+gtemp_ocean_f = ksmooth(time(gtemp_ocean),gtemp_ocean,"normal", bandwidth = 12)
+lines(gtemp_ocean, col=culer[2])
+lines(gtemp_ocean_f, lwd=2, col=4)
+```
+**Lowess Smoothing**
+```{r}
+culer = c(rgb(.85,.30,.12,.6), rgb(.12,.65,.85,.6))
+w = c(.5, rep(1,11), .5)/12
+gtemp_land_f = lowess(gtemp_land)
+tsplot(gtemp_land, col=culer[1], ylim=c(-1, 1.65))
+lines(gtemp_land_f, lwd=2, col=2)
+gtemp_ocean_f = lowess(gtemp_ocean)
+lines(gtemp_ocean, col=culer[2])
+lines(gtemp_ocean_f, lwd=2, col=4)
+```
+
 All methods seems to model the trend reasonably, but one needs to be careful on picking the tunning parameters such as the weights of MA smoothing, bandwitdh of the kernel smoothing, and so on.
+MA starts 3 years early and late. Kernel smoothing gives us the smoothest trend of the 3. Lowess is more localised.
+
+## 3.9
+
+```{r}
+culer = c("cyan4", 4, 2, 6)
+par(mfrow = c(4, 1), cex.main = 1)
+x = window(log(jj), start = 1960)
+out = stl(x, s.window = "periodic")$time.series
+
+tsplot(x, main = "Johnson & Johnson", ylab = "", col = gray(0.7))
+text(x, labels = 1:4, col = culer, cex = 1.25)
+tsplot(out[,1], main = "Seasonal", ylab = "", col = gray(0.7))
+text(out[,1], labels = 1:4, col = culer, cex = 1.25)
+tsplot(out[,2], main = "Trend", ylab = "", col = gray(0.7))
+text(out[,2], labels = 1:4, col = culer, cex = 1.25)
+tsplot(out[,3], main = "Noise", ylab = "", col = gray(0.7))
+text(out[,3], labels = 1:4, col = culer, cex = 1.25)
+```
+```{r}
+culer = c("cyan4", 4, 2, 6)
+par(mfrow = c(4, 1), cex.main = 1)
+x = window(log(jj), start = 1960)
+plot(decompose(x))
+```
+
+The Seasonal plot shows an increase from Q1 to Q2, increase from Q2 to Q3, sharp decrease from Q3 to 4, and an increase back from Q4 to the next Q1. The Trend plot shows a steady increase over the 20 years of the data from quarter to quarter, relatively smooth. The Noise plot shows higher deviations from Q3 and Q4 from the data than Q1 and Q2.
+
+ 
+
+In 3.1 we had a good model fit (residuals around 0 and a trend line that fit the data well). Here, we see a Noise plot that would indicate a good fit, all around 0, and a seasonal trend that is somewhat regular (in terms of direction but not always in magnitude). This generally agrees with the model in 3.1 being a good fit.

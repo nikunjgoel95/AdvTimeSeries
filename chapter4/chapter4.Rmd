@@ -1,0 +1,45 @@
+---
+title: "chapter4"
+author: "Nikunj Goel"
+date: "10/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 4.2
+
+### Part a)
+
+Using **Mathematical Induction** to prove the formula
+$$
+x_{t} = \sum_{j=0}^{t}\phi^jw_{t-j}
+\\
+x_{0} = w_{0}
+\\
+x_{1} = \phi^0w_{1} + \phi^1w_{0}
+\\
+x_{2} = \phi^0w_{2} + \phi^1w_{1} +\phi^2w_{0}
+\\
+x_{3} = \phi^0w_{3} + \phi^1w_{2} +\phi^2w_{1} + \phi^3w_{0}
+\\
+Assuming \ it \ to \ be \ true \ for \ x_{t-1}
+\\
+The \ expression \ hold \ for \ x_{t} 
+\\
+x_{t} = \phi(\sum_{k=0}^\infty \phi^kw_{t-1-k}) + w_{t}
+\\
+Hence \ Proved
+$$
+### Part b)
+
+$$
+Right \  hand \ side \ is
+\\
+= w_{t} + \phi w_{t-1}[k=0] + \phi^2w_{t-2}[k=1] + ...
+\\
+E(x_{t}) = \sum_{j=0}^{\infty}\phi^jE(w_{t-j}) = 0
+$$
+ 

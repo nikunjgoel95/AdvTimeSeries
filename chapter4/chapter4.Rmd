@@ -351,5 +351,5 @@ sarima.for(diff(cmort), n.ahead=4,p=1,d=0,q=0)
 ### Part g)
 
 ```{r}
-sarima.for(diff(cmort), n.ahead=1,p=1,d=0,q=0)
+sarima.for(cmort, n.ahead=1,p=1,d=0,q=0)
 ```

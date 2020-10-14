@@ -29,10 +29,11 @@ Assuming \ it \ to \ be \ true \ for \ x_{t-1}
 \\
 The \ expression \ hold \ for \ x_{t} 
 \\
-x_{t} = \phi(\sum_{k=0}^\infty \phi^kw_{t-1-k}) + w_{t}
+x_{t} = \phi(\sum_{k=0}^t \phi^kw_{t-1-k}) + w_{t}
 \\
 Hence \ Proved
 $$
+
 ### Part b)
 
 $$
@@ -40,6 +41,280 @@ Right \  hand \ side \ is
 \\
 = w_{t} + \phi w_{t-1}[k=0] + \phi^2w_{t-2}[k=1] + ...
 \\
-E(x_{t}) = \sum_{j=0}^{\infty}\phi^jE(w_{t-j}) = 0
+E(x_{t}) = \sum_{j=0}^t\phi^jE(w_{t-j}) = 0
 $$
  
+### Part c)
+ 
+$$
+var(x_{t}) = cov(x_{t},x_{t})
+\\
+= cov(\sum_{j=0}^{t} \phi^jw_{t-j},\sum_{k=0}^t\phi^kw_{t-k})
+\\
+= \sigma^2_{w} \sum_{j=0}^t \phi^j \phi^j
+\\
+= \sigma^2_{w} \frac{(1-\phi^{2(t+1)})}{1 - \phi^2}
+$$
+ 
+ 
+### Part d)
+
+$$
+cov(x_{t+h},x_{t}) = cov(\sum_{j=0}^{t} \phi^jw_{t+h-j},\sum_{k=0}^t\phi^kw_{t-k})
+\\
+= cov[w_{t+h} +....+ \phi^hw_{t} +.., \phi^0w_{t} + \phi w_{t-1}+...]
+\\
+= \sigma^2_{w} \sum_{j=0}^t \phi^{j+h} \phi^j
+\\
+= \phi^h \sigma^2_{w} \sum_{j=0}^t \phi^{j} \phi^j
+\\
+= \phi^h var(x_{t})
+$$
+
+### Part e)
+
+$x_{t}$ process is not stationary as variance is dependent of time.
+
+### Part f)
+
+When $t -> \infty$ , process is stationary because $|\phi| < 1$
+$$
+var(x_{t}) = \frac{\sigma^2_{w}}{1 - \phi^2}
+$$
+As now variance is independent of time. 
+Here as the time is increasing the series is approaching to stationarity so $x_t$ is called 'asymptotically stationary'.
+
+### Part g)
+
+**Nhi Samajh aa rha **
+
+### Part h)
+
+Now $x_0 = \frac{w_0}{\sqrt{1-\phi^2}}$
+
+$$
+\begin{aligned}
+x_t &= \phi x_{t-1}+w_t
+\\
+for \ \ t = 1
+\\
+x_1 &= \phi x_0 + w_1
+\\
+&= \phi \frac{w_0}{\sqrt{1-\phi^2}} + \phi^0w_1
+\\
+for \ \ t = 2
+\\
+x_2 &= \phi x_1 + w_2
+\\
+&= \phi(\phi \frac{w_0}{\sqrt{1-\phi^2}} + \phi^0w_1) + \phi^0w_2
+\\
+&= \phi^2 \frac{w_0}{\sqrt{1-\phi^2}} + \phi w_1 + \phi^0w_2
+\\
+for \ \ t = 3
+\\
+x_3 &= \phi x_2 + w_3
+\\
+&= \phi(\phi^2 \frac{w_0}{\sqrt{1-\phi^2}} + \phi w_1 + \phi^0w_2) + w_3
+\\
+&= \phi^3 \frac{w_0}{\sqrt{1-\phi^2}} + \phi^2 w_1 + \phi w_2 + \phi^0w_3
+\\
+&. \\
+&. \\
+&. \\
+&. \\
+Using \ mathematical \ &induction \  we \ can \ write \ below \ for \ x \ at \ t
+\\
+x_t &= \frac{\phi^t w_0}{\sqrt{1-\phi^2}}+ \sum_{j=0}^{t-1} \phi^jw_{t-j}
+\end{aligned}
+$$
+
+The mean of $x_t$ is
+$$
+\begin{aligned}
+E[x_t] &= E[\frac{\phi^t w_0}{\sqrt{1-\phi^2}}+ \sum_{j=0}^{t-1} \phi^jw_{t-j}]
+\\
+&= \frac{\phi^t}{\sqrt{1-\phi^2}} E[w_0] + \sum_{j=0}^{t-1} \phi^jE[w_{t-j}]
+\\
+&= 0 \ \ \ as \ \ \ E[w_t] = 0 \ \ \ for \ \ all \ \ t.
+\end{aligned}
+$$
+
+From the above we can define the variance of $x_{t}$ as
+
+$$
+\begin{aligned}
+var(x_t) &= cov(\frac{\phi^t w_0}{\sqrt{1-\phi^2}}+ \sum_{j=0}^{t-1} \phi^jw_{t-j}, \frac{\phi^t w_0}{\sqrt{1-\phi^2}}+ \sum_{k=0}^{t-1} \phi^kw_{t-k})
+\\
+&= cov(\frac{\phi^t w_0}{\sqrt{1-\phi^2}},\frac{\phi^t w_0}{\sqrt{1-\phi^2}}) + cov(\frac{\phi^t w_0}{\sqrt{1-\phi^2}},\sum_{j=0}^{t-1} \phi^jw_{t-j}) + cov(\frac{\phi^t w_0}{\sqrt{1-\phi^2}},\sum_{k=0}^{t-1} \phi^kw_{t-k})
+\\
+& \ \ \ \ \ \ + cov(\sum_{j=0}^{t-1} \phi^jw_{t-j}, \sum_{k=0}^{t-1} \phi^kw_{t-k})
+\\
+&= \frac{\phi^{2t} \sigma_w^2}{1-\phi^2} + 0 + 0 + cov(\sum_{j=0}^{t-1} \phi^jw_{t-j}, \sum_{k=0}^{t-1} \phi^kw_{t-k})
+\\
+&= \frac{\phi^{2t} \sigma_w^2}{1-\phi^2} + \sigma_w^2 \sum_{j=0}^{t-1}\phi^{2j}
+\\
+&= \frac{\phi^{2t} \sigma_w^2}{1-\phi^2} + \sigma_w^2 \frac{(1-(\phi^2)^{(t-1+1)})}{(1-\phi^2)}
+\\
+&= \frac{\phi^{2t} \sigma_w^2}{1-\phi^2} + \sigma_w^2\frac{(1-\phi^{2t})}{(1-\phi^2)}
+\\
+&= \frac{\sigma_w^2}{1-\phi^2} (\phi^{2t} + 1 - \phi^{2t})
+\\
+var(x_t) &= \frac{\sigma^2}{1-\phi^2}
+\end{aligned}
+$$
+From the above the mean of $x_t$ is constant and variance is not dependent on time so the process is stationary.
+
+## Problem 4.3
+
+Given the two models are $x_t = .80x_{t-1}-.15x_{t-2}+w_t-.30w_{t-1}$ and $x_t = x_{t-1} - .50x_{t-2}+w_t-w_{t-1}$
+
+### Part a)
+
+Model 1
+$$
+\begin{aligned}
+x_t &= .80x_{t-1}-.15x_{t-2}+w_t-.30w_{t-1}
+\\
+(0.15B^2 - 0.8B + 1) x_t &= (1 - 0.3B) w_t
+\\
+(0.15B^2 - 0.5B - 0.3B + 1)x_t &= (1-0.3B)w_t
+\\
+(0.5B(0.3B - 1) - 1(0.3B - 1))x_t &= (1-0.3B)w_t
+\\
+(0.5B-1)(0.3B-1)x_t &= (1 - 0.3B)w_t
+\\
+Reduced \ \ form \ \ below
+\\
+(0.5B - 1)x_t &= -w_t
+\\
+x_t - 0.5x_{t-1} &= w_t
+\end{aligned}
+$$
+From the above we can cancel out (1-0.3B) on each side and model is only AR(1). The model has parameter redundancy and the reduced form of the model is $x_t = 0.5x_{t-1} + w_t$
+
+Model 2
+$$
+\begin{aligned}
+x_t &= x_{t-1} - .50x_{t-2}+w_t-w_{t-1}
+\\
+x_t - x_{t-1} + 0.5x_{t-2} &= w_t - w_{t-1}
+\\
+(1 - B + 0.5B^2)x_t &= (1-B)w_t
+\\
+The \ \ above \ \ equation \ \ has \ \ complex \ \ roots \ \ on \ \ left \ \ side
+\\
+0.5(B - 1 + i)(B - 1 - i) x_t &= (1-B)w_t
+\end{aligned}
+$$
+
+From the above there are no common roots on both sides. So the model is already in its reduced form only.
+
+## Part b)
+
+Model 1
+```{r}
+library(astsa)
+
+Mod(polyroot( c(1,-.5) ))
+
+Mod(polyroot(c(1)))
+```
+
+From the above we can see that the magnitude of the root is not less than or equal to 1 for AR. So the ARMA model-1 in reduced form is causal.
+
+The MA model is invertible.
+
+
+Model 2
+```{r}
+Mod(polyroot( c(1,-.1, .5) ))
+
+Mod(polyroot( c(1,-1) ))
+```
+
+From the above we can see that the magnitude of the roots is not less than or equal to 1 for AR. So the ARMA model-2 in reduced form is causal.
+Where as the roots of MA are equal to one in magnitude. So the ARMA model-2 in reduced form is not invertible.
+
+### Part c)
+
+```{r}
+#Model 1
+round(ARMAtoMA(ar = .5, ma = 0, 50), 3)
+round(ARMAtoAR(ar = .5, ma = 0, 50), 3)
+```
+
+From the above Model-1 we can see that ARMAtoMA is causal as the coefficients are decreasing to zero fast . 
+The ARMAtoAR is also invertible as the  coefficients converged to zero from 2nd coefficients.
+
+```{r}
+#Model 2
+round(ARMAtoMA(ar = c(1, -.5), ma = -1, 50), 3)
+round(ARMAtoAR(ar = c(1, -.5), ma = -1, 50 ), 3)
+```
+
+From the above Model-2 we can seen ARMAtoMA is causal as the coefficients converged to zero.
+But ARMAtoAR is not invertible as the coefficients are constant and are never converging to zero.
+
+## Problem 4.4
+
+### Part a)
+
+```{r}
+ACF = ARMAacf(ar = c(0.6), ma = c(0.9), 24)[-1]
+PACF = ARMAacf(ar = c(0.6), ma = c(0.9), 24, pacf = TRUE)
+par(mfrow = 1:2)
+tsplot(ACF, type = "h", xlab = "lag", ylim = c(-.8, 1))
+abline(h = 0)
+tsplot(PACF, type = "h", xlab = "lag", ylim = c(-.8, 1))
+abline(h = 0)
+```
+
+```{r}
+ACF = ARMAacf(ar = c(0.6), ma = 0, 24)[-1]
+PACF = ARMAacf(ar = c(0.6), ma = 0, 24, pacf = TRUE)
+par(mfrow = 1:2)
+tsplot(ACF, type = "h", xlab = "lag", ylim = c(-.8, 1))
+abline(h = 0)
+tsplot(PACF, type = "h", xlab = "lag", ylim = c(-.8, 1))
+abline(h = 0)
+```
+
+```{r}
+ACF = ARMAacf(ar = 0, ma = c(0.9), 24)[- 1 ]
+PACF = ARMAacf(ar = 0, ma = c(0.9), 24, pacf = TRUE)
+par(mfrow = 1:2)
+tsplot(ACF, type = "h", xlab = "lag", ylim = c(-.8, 1))
+abline(h = 0)
+tsplot(PACF, type = "h", xlab = "lag", ylim = c(-.8, 1))
+abline(h = 0)
+```
+
+### Part b)
+
+```{r}
+arma = arima.sim(list(order=c(1,0,1), ar=.6, ma=.9), n=100) 
+acf2(arma)
+```
+
+
+### Part c)
+
+```{r}
+arma = arima.sim(list(order=c(1,0,1), ar=.6, ma=.9), n=500) 
+acf2(arma)
+```
+
+
+## Problem 4.5
+
+### Part a)
+
+```{r}
+tsplot(diff(cmort))
+```
+
+### Part b)
+
+```{r}
+acf2(diff(cmort))
+```

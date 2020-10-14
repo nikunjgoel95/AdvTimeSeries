@@ -289,11 +289,18 @@ tsplot(PACF, type = "h", xlab = "lag", ylim = c(-.8, 1))
 abline(h = 0)
 ```
 
+In ARMA(1,1) both acf and pacf tails off
+In ARMA(1,0) acf tails off and pacf cutf off after lag p (p=1 in this case)
+In ARMA(0,1) acf cuts off after lag q(q=1 in this case) and pacf tails off.
+
 ### Part b)
 
 ```{r}
-arma = arima.sim(list(order=c(1,0,1), ar=.6, ma=.9), n=100) 
-acf2(arma)
+#acf2(arima.sim(list(order=c(1,0,1), ar=.6, ma=.9), n=100))
+acf2(arima.sim(model = list(ar=.6, ma=.9), n=100))
+acf2(arima.sim(model = list(ar=.6), n=100))
+acf2(arima.sim(model = list(ma=.9), n=100))
+#acf2(arima.sim(list(order=c(0,0,1), ar=.6, ma=.9), n=100))
 ```
 
 
@@ -313,8 +320,37 @@ acf2(arma)
 tsplot(diff(cmort))
 ```
 
+Differencing seems reasonable in this case as it produces fairly stationary time series.
+
 ### Part b)
 
 ```{r}
 acf2(diff(cmort))
+```
+
+AR(1) is apprpriate for $x_{t}$ because ACF is tailing off.PACF cuts off after lag = 1 and values are nearly closely to zero.
+
+### Part c)
+
+```{r}
+sarima(diff(cmort), p=1,d=0,q=0, no.constant = TRUE)
+```
+### Part d)
+
+Residuals do not follow any pattern.
+
+
+### Part e)
+
+```{r}
+sarima.for(diff(cmort), n.ahead=4,p=1,d=0,q=0)
+```
+### Part f)
+
+** write the equation of forecasting here**
+
+### Part g)
+
+```{r}
+sarima.for(diff(cmort), n.ahead=1,p=1,d=0,q=0)
 ```

@@ -53,6 +53,12 @@ var(x_{t}) = cov(x_{t},x_{t})
 \\
 = \sigma^2_{w} \sum_{j=0}^t \phi^j \phi^j
 \\
+= \sigma^2_{w} \sum_{j=0}^t \phi^{2j}
+\\
+Using \ the \ expansion
+\\
+\sum_{j=0}^{k} a^j = \frac{(1 - a^{k+1})}{(1-a)} 
+\\
 = \sigma^2_{w} \frac{(1-\phi^{2(t+1)})}{1 - \phi^2}
 $$
  
@@ -67,6 +73,13 @@ cov(x_{t+h},x_{t}) = cov(\sum_{j=0}^{t} \phi^jw_{t+h-j},\sum_{k=0}^t\phi^kw_{t-k
 = \sigma^2_{w} \sum_{j=0}^t \phi^{j+h} \phi^j
 \\
 = \phi^h \sigma^2_{w} \sum_{j=0}^t \phi^{j} \phi^j
+\\
+= \phi^h \sigma^2_{w} \sum_{j=0}^t \phi^{2j}
+\\
+\\
+Using \ the \ expansion
+\\
+\sum_{j=0}^{k} a^j = \frac{(1 - a^{k+1})}{(1-a)} 
 \\
 = \phi^h var(x_{t})
 $$
@@ -86,7 +99,7 @@ Here as the time is increasing the series is approaching to stationarity so $x_t
 
 ### Part g)
 
-**Nhi Samajh aa rha **
+If we generate n observations we basically get rid of the beginning, like its warming up, and then it turns into gaussian ar(1) because phi < 1 which is iid N(0,1)
 
 ### Part h)
 
@@ -222,7 +235,7 @@ Mod(polyroot(c(1)))
 
 From the above we can see that the magnitude of the root is not less than or equal to 1 for AR. So the ARMA model-1 in reduced form is causal.
 
-The MA model is invertible.
+It is similar to MA(1) model and it is invertible.
 
 
 Model 2
@@ -289,9 +302,9 @@ tsplot(PACF, type = "h", xlab = "lag", ylim = c(-.8, 1))
 abline(h = 0)
 ```
 
-In ARMA(1,1) both acf and pacf tails off
-In ARMA(1,0) acf tails off and pacf cutf off after lag p (p=1 in this case)
-In ARMA(0,1) acf cuts off after lag q(q=1 in this case) and pacf tails off.
+In ARMA(1,1) both acf & pacf tails off and it is little difficult to find the value of *p* and *q*.
+In ARMA(1,0) acf tails off and pacf cutf off after lag p (p=1 in this case) which gives us the insight that the model is AR(1).
+In ARMA(0,1) acf cuts off after lag q(q=1 in this case) and pacf tails off which gives us the insight that the model is MA(1).
 
 ### Part b)
 
@@ -300,7 +313,7 @@ acf2(arima.sim(list(order=c(1,0,1), ar=.6, ma=.9), n=100),main = "ARMA(1,1)")
 acf2(arima.sim(list(order=c(1,0,0), ar=.6), n=100),main = "ARMA(1,0)")
 acf2(arima.sim(list(order=c(0,0,1), ma=.9), n=100),main = "ARMA(0,1)")
 ```
-
+The practical values are close to the theoretical values but in practical values are negligible but not zero.
 
 ### Part c)
 
@@ -309,7 +322,7 @@ acf2(arima.sim(list(order=c(1,0,1), ar=.6, ma=.9), n=500),main = "ARMA(1,1)")
 acf2(arima.sim(list(order=c(1,0,0), ar=.6), n=500),main = "ARMA(1,0)")
 acf2(arima.sim(list(order=c(0,0,1), ma=.9), n=500),main = "ARMA(0,1)")
 ```
-
+As the number is higher, it more closely relates to theoretical values.
 
 ## Problem 4.5
 
@@ -319,7 +332,7 @@ acf2(arima.sim(list(order=c(0,0,1), ma=.9), n=500),main = "ARMA(0,1)")
 tsplot(diff(cmort))
 ```
 
-Differencing seems reasonable in this case as it produces fairly stationary time series.
+Differencing seems reasonable in this case as it produces fairly stationary time series and removes the trend from the data.
 
 ### Part b)
 
@@ -327,29 +340,106 @@ Differencing seems reasonable in this case as it produces fairly stationary time
 acf2(diff(cmort))
 ```
 
-AR(1) is apprpriate for $x_{t}$ because ACF is tailing off.PACF cuts off after lag = 1 and values are nearly closely to zero.
+AR(1) is appropriate for $x_{t}$ because ACF is tailing off.PACF cuts off after lag = 1 and values are nearly closely to zero.
 
 ### Part c)
 
 ```{r}
 sarima(diff(cmort), p=1,d=0,q=0, no.constant = TRUE)
 ```
+As the P value is zero, it proves the regression coefficients are significant.
+
+The estimate of the white noise variance is 0.00146
+
 ### Part d)
 
-Residuals do not follow any pattern.
+```{r}
+library(astsa)
+value = sarima(diff(cmort), p=1,d=0,q=0, no.constant = TRUE)
+tsplot(resid(value$fit))
+acf1(resid(value$fit))
+```
+If we see the acf1 plot of the residuals it clearly shows that it is white noise.
 
 
 ### Part e)
 
 ```{r}
-sarima.for(diff(cmort), n.ahead=4,p=1,d=0,q=0)
+forecastPlot <- sarima.for(diff(cmort), n.ahead=4,p=1,d=0,q=0,no.constant = TRUE)
+```
+The Predicted values
+```{r}
+forecastPlot$pred
+```
+
+The 95% interval values
+```{r}
+forecastPlot$pred + 1.96*forecastPlot$se
+forecastPlot$pred - 1.96*forecastPlot$se
 ```
 ### Part f)
 
-** write the equation of forecasting here**
+The forecast is done based on the equation $x_{n+m}^n = \phi^{m} x_n + w_{n+m}$. Where the $\phi^m$ values are the PACF values of lag m at. So here if we want to forecast next value we are calculating $x_{n+1}^n = \phi x_n + w_{n+1}$.
+
+As the $w_{n+1}$ is future error we equate it to zero $w_{n+1} = 0$. We can write the m - step ahead forecast as
+
+$$
+x_{n+m}^n = \phi^m x_n
+$$
+The last value of xt is
+```{r}
+xt = diff(cmort)
+xt[length(xt)]
+```
+From the above PACF plots from 4.5b the lag1 values are [-0.51]
+PACF at lag 1 is -0.51. So we can calculate our Next value which is
+$$
+\begin{aligned}
+x_{n+1} &= \phi x_{n}
+\\
+x_{n+1} &= (-0.51) * (-3.94)
+\\
+&= 2.0094
+\end{aligned}
+$$
+$$
+\begin{aligned}
+x_{n+2} &= \phi^2 x_{n}
+\\
+x_{n+2} &= (-0.51)^2 * (-3.94)
+\\
+&= -1.024
+\end{aligned}
+$$
+
+
+$$
+\begin{aligned}
+x_{n+3} &= \phi^3 x_{n}
+\\
+x_{n+3} &= (-0.51)^3 * (-3.94)
+\\
+&= 0.5226
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+x_{n+4} &= \phi^4 x_{n}
+\\
+x_{n+4} &= (-0.51)^4 * (-3.94)
+\\
+&= -0.2665
+\end{aligned}
+$$
 
 ### Part g)
 
 ```{r}
-sarima.for(cmort, n.ahead=1,p=1,d=0,q=0)
+acf2(cmort)
+```
+After seeing the acf2 plot we can easily see that pacf cuts at lag=2 which means ARMA(2,0) would be a better model for the data. 
+
+```{r}
+sarima.for(cmort, n.ahead=1,p=2,d=0,q=0)
 ```

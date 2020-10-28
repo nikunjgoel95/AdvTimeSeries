@@ -86,7 +86,7 @@ $$
 
 ### Part e)
 
-$x_{t}$ process is not stationary as variance is dependent of time.
+$x_{t}$ process is not stationary as Co-variance is dependent of time.
 
 ### Part f)
 
@@ -175,7 +175,7 @@ var(x_t) &= cov(\frac{\phi^t w_0}{\sqrt{1-\phi^2}}+ \sum_{j=0}^{t-1} \phi^jw_{t-
 var(x_t) &= \frac{\sigma^2}{1-\phi^2}
 \end{aligned}
 $$
-From the above the mean of $x_t$ is constant and variance is not dependent on time so the process is stationary.
+From the above the mean of $x_t$ is constant and covariance is not dependent on time so the process is stationary.
 
 ## Problem 4.3
 

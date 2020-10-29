@@ -1,0 +1,222 @@
+---
+title: "chapter5"
+author: "Nikunj Goel"
+date: "10/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(astsa)
+library(ggplot2)
+```
+
+## Problem 5.2
+
+Plotting the *GDP* data.
+
+```{r}
+tsplot(gdp)
+```
+
+Plotting the *acf* of the data.
+
+```{r}
+acf1(gdp)
+```
+
+Applying transformation over data
+
+```{r}
+tsplot(diff(log(gdp)), ylab="GDP tranformed data", col=4)
+abline(h=mean(diff(log(gdp))), col=6)
+```
+Considering the difference on the logged data for now.
+
+plotting the **acf** and **pacf** plot to determine the **p** and **q** values for the ARIMA model.
+
+```{r}
+acf2(diff(log(gdp)))
+```
+Inspecting the sample **ACF** and **PACF** it feels like there are 3 possibilities. \
+1) AR(1) model as PACF looks like cutting off after lag 1 and ACF tails off \
+2) MA(2) model as ACF looks like cutting off after lag 2 and PACF tails off \
+3) ARMA(1,0,2) on diff(log(gdp)) or ARIMA(1,1,2) on log(gdp).
+\
+Trying to fit the model over the data
+
+**AR(1)**
+```{r}
+sarima(log(gdp),p=1,d=1,q=0)
+```
+**MA(2)**
+```{r}
+sarima(log(gdp),p=0,d=1,q=2)
+```
+**ARIMA(1,1,2)**
+```{r}
+sarima(log(gdp),p=1,d=1,q=2)
+```
+In this **ARIMA(1,1,2)** has insignificant values as shown by p.value in model fit.\
+Standardized residuals in all the models shows no pattern. \
+ACF of the residuals shows no apparent departure from the model assumption apart from AR(1). \
+P-Value plot shows values exceeding 0.05, we can feel comfortable not rejecting the null hypothesis that the residuals are white apart from AR(1). \
+
+Let's try higher dimension model to see if the value changes
+
+```{r}
+sarima(log(gdp),p=2,d=1,q=2)
+sarima(log(gdp),p=1,d=1,q=3)
+```
+Values doesn't change much for higher models. \
+
+Looking at the **AIC**, **AICc** and **BIC** MA(2) is the better choice model of the 3.
+
+## Problem 5.4
+
+First lets see the time series
+
+```{r}
+tsplot(gtemp_land)
+```
+We can see a clear trend, let’s look at the ACF to confirm this,
+
+```{r}
+acf(gtemp_land)
+```
+The slow decay of the ACF suggest us to take a difference, we do that now.
+
+```{r}
+tsplot(diff(gtemp_land))
+abline(h=mean(diff(gtemp_land)))
+```
+Looks much better. \
+
+The next step is to plot the ACF and PACF of this differenced gtemp, and establish orders for the ARIMA model.
+
+```{r}
+par(mfrow = c(2,1))
+acf(diff(gtemp_land))
+pacf(diff(gtemp_land))
+```
+From the above we can see that the ACF appears to cut off at lag 1 and the PACF tails off. This is suggesting the model MA(1) for the difference temp, or ARIMA(0, 1,1) for the gtemp_land. Let use this and fit the model.
+
+```{r}
+par(mfrow = c(1,1))
+sarima(gtemp_land, 0, 1, 1)
+```
+Diagnoses \
+
+1) Standardized Residuals: They have to apparent pattern, and so we can conclude tha they resemble white noise. \
+
+2) ACF of Residuals: Much like the Residuals Vs Time plot the ACF of these appears to resemble the acf of white noise and so we are happy. \
+
+3) QQ Plot: The qqplot is a great fit, even towards the tails, the divergence from the theoretical quantiles is minimal. \
+
+Trying more complex models
+
+```{r}
+sarima(gtemp_land, 0, 1, 2)
+sarima(gtemp_land, 1, 1, 1)
+```
+Seeing the **AIC** and **AICc**, the model MA(1) or ARIMA(0,1,1) is best.
+
+Forecast
+
+```{r}
+sarima.for(gtemp, 10, 0, 1, 1)
+```
+
+## Problem 5.11
+
+Plotting the data
+
+```{r}
+tsplot(birth)
+```
+
+Trying transformations over the data
+
+```{r}
+tsplot(diff(diff(birth,12)))
+abline(h = mean(diff(diff(birth,12))))
+```
+Plotting the ACF and PACF of the data
+
+```{r}
+acf2(diff(diff(birth,12)))
+```
+Seasons - It appears that at the seasons, the ACF is cutting off at lag 1s (s=12) whereas the PACF is tailing off at lags 1s,2s,3s,4s. These results simply imply an SMA(1)
+
+Non Seasonal - Inpecting the sample ACF and PACF at the first few lags, it appears as though the ACF cuts off at  lag = 1, whereas the PACF is tailing off. This suggests an MA(1) within the seasons, p=0 and q=1.
+
+```{r}
+sarima(birth,p=0,d=1,q=1,P=0,D=1,Q=1,S=12,no.constant = TRUE)
+```
+p-values of the residuals are all below 0.05 and thus we cannot say it to be white.\
+ARIMA(0,1,1) x (0,1,1)_12 does'nt give good results.
+
+let's try for \
+ARIMA(0,1,2) x (0,1,1)_12
+
+```{r}
+sarima(birth,p=0,d=1,q=2,P=0,D=1,Q=1,S=12,no.constant = TRUE)
+sarima(birth,p=1,d=1,q=1,P=0,D=1,Q=1,S=12,no.constant = TRUE)
+```
+
+P-values of both the models are decent enough to consider it white but the **AIC** and **AICc** values indicate \
+ARIMA(1,1,1) x (0,1,1)_12 as better model.
+
+```{r}
+sarima.for(birth,12,1,1,1,0,1,1,12,no.constant = TRUE)
+```
+
+## Problem 5.14
+
+Trying to plot the **CPG**
+
+### Part a)
+
+```{r}
+tsplot(cpg)
+```
+The trend of the values are decreasing continously and almost tending to zero when seen for such a long duration.
+
+### Part b)
+
+```{r}
+logcpg = log(cpg)
+modlm = lm(logcpg ~ time(cpg),na.action = NULL)
+summary(modlm)
+tsplot(modlm$fitted.values) 
+lines(logcpg)
+```
+
+The fitted line is nearly perfect to the logged data.
+Let $log(c_t) = \beta t$ then \
+$c_t = e^{\beta t}$
+
+### Part c)
+
+
+```{r}
+plot(resid(modlm))
+acf2(resid(modlm))
+```
+
+By inspecting the acf plot of residuals, I can say that the residuals are not white.
+
+
+### Part d)
+
+PACF lags at lag=1 and ACF tails off from **Part c)**. \
+Let's try AR(1) model.
+
+```{r}
+reg2 = sarima(logcpg,1,0,0,xreg= time(cpg))
+```
+
+After inspecting the residuals and ACF it looks fairly white.

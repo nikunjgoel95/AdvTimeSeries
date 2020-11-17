@@ -18,7 +18,7 @@ library(astsa)
 
 ```{r}
 x1 = 2*cos(2*pi*1:128*6/100) + 3*sin(2*pi*1:128*6/100)
-x2 = 4*cos(2*pi*1:128*10/100) + 5*sin(2*pi*1:128*6/100)
+x2 = 4*cos(2*pi*1:128*10/100) + 5*sin(2*pi*1:128*10/100)
 x3 = 6*cos(2*pi*1:128*40/100) + 7*sin(2*pi*1:128*40/100)
 x = x1 + x2 + x3
 par(mfrow=c(2,2))
@@ -26,4 +26,133 @@ tsplot(x1, ylim=c(-10,10), main=expression(omega==6/100~~~ A^2==13))
 tsplot(x2, ylim=c(-10,10), main=expression(omega==10/100~~~ A^2==41))
 tsplot(x3, ylim=c(-10,10), main=expression(omega==40/100~~~ A^2==85))
 tsplot(x, ylim=c(-10,10), main="sum")
+```
+
+The fundamental frequency is higher as compared to the one plotted in **Example 6.1**. <More comments should be added here>
+
+### Part b)
+
+```{r}
+P = Mod(fft(x)/sqrt(128))^2
+sP = (4/128)*P
+Fr = 0:127/128
+tsplot(Fr,sP,type="o", xlab="frequency", ylab="scaled periodogram", col=4, ylim=c(0,90))
+abline(v = 0.5, lty=5)
+#abline(v = c(0.1,0.3,0.7,0.9), lty=4, col=gray(0.9))
+#axis(side=1, at)
+```
+
+$$
+P(\frac{6}{128}) = P(\frac{122}{128}) = 11.86
+$$
+
+<Comments should be added here>
+
+```{r}
+set.seed(768)
+x1 = 2*cos(2*pi*1:100*6/100) + 3*sin(2*pi*1:100*6/100)
+x2 = 4*cos(2*pi*1:100*10/100) + 5*sin(2*pi*1:100*10/100)
+x3 = 6*cos(2*pi*1:100*40/100) + 7*sin(2*pi*1:100*40/100)
+x = x1 + x2 + x3 + rnorm(100,0,5)
+par(mfrow=c(2,2))
+tsplot(x1, ylim=c(-10,10), main=expression(omega==6/100~~~ A^2==13))
+tsplot(x2, ylim=c(-10,10), main=expression(omega==10/100~~~ A^2==41))
+tsplot(x3, ylim=c(-10,10), main=expression(omega==40/100~~~ A^2==85))
+tsplot(x, ylim=c(-10,10), main="sum")
+```
+
+```{r}
+P = Mod(fft(x)/sqrt(100))^2
+sP = (4/100)*P
+Fr = 0:99/100
+tsplot(Fr,sP,type="o", xlab="frequency", ylab="scaled periodogram", col=4, ylim=c(0,100))
+abline(v = 0.5, lty=5)
+```
+
+**Add comments here**
+
+## 6.9
+
+### Part a)
+
+
+### Part b)
+
+```{r}
+par(mfrow=c(3,1))
+tsplot(soi,col=4, main="SOI")
+tsplot(diff(soi,12), col=4, main="Difference of 12")
+tsplot(diff(diff(soi,12)),col=4, main="Difference of 1")
+```
+
+### Part c)
+
+```{r}
+w = seq(0,0.5, length=1000)
+par(mfrow=c(2,1))
+FR12 = abs(1-exp(2i*12*pi*w))^2
+tsplot(w,FR12, main="12th Difference")
+abline(v=1:6/12)
+FR121 = abs(1-exp(2i*pi*w) - exp(2i*12*pi*w) + exp(2i*12*pi*w))^2
+tsplot(w,FR121,main="1st Diff and 12th Diff")
+abline(v=1:6/12)
+```
+
+## 7.1
+
+Plotting the **sunspotz** data.
+
+```{r}
+tsplot(sunspotz)
+```
+
+
+```{r}
+mvspec(sunspotz)
+rect(0.0917,-1e5,0.1000,1e5,col=gray(0.5,0.2),density = NA)
+abline(v=0.0917,lty=2)
+mvspec(sunspotz,log='y')
+abline(v=0.0917,lty=2)
+```
+The odd number of points creates a minor problem as the periodogram work was described in terms of an even number of points. The mvspec first detrend the data either using differences or some sort of trend line before determining the periodogram. The differenced data (for this example) has the added benefit of creating a sample size that’s even - with n = 459 data values there are 458 differences.
+
+The dominant peak area occurs somewhere around a frequency of 0.0125 & 0.0917. Investigation of the periodogram values indicates that the peak occurs at nearly exactly this frequency. This corresponds to a period of about 1/0.0125 = 80 & 1/0.0917 = 10.9 time periods. That’s approximately 80 years and 11 years, because this is semi-annual data. Thus there appears to be a dominant periodicity of about 80 years and 11 years in sunspot activity.
+
+Looking at the spectrum values, the confidence interval seems between 1/0.1000 and 1/0.0917 which is 10 to 10.9 years.
+
+
+## 7.4
+
+```{r}
+ans = mvspec(sunspotz,spans = 3)
+ans = mvspec(sunspotz,spans=5)
+ans = mvspec(sunspotz,spans=7)
+ans = mvspec(sunspotz,spans=9)
+ans = mvspec(sunspotz,spans=9,taper = 0.2)
+ans = mvspec(sunspotz,spans=9,taper=0.2,log='y')
+mvspec(sunspotz,spans=9,taper = 0.2)$details[1:30,]
+```
+
+Looking at the values of the spectrum and the graph, The best value of spans(L) = 9 and m=4 because $f(w_j + k/n), k= -m,..0...m$ are approximately equal to $f(w)$.
+The smoothed spectra provides a sensible compromise between the noisy version, and a more heavily smoothed spectrum which might loose some of the peaks.
+Taping generally enhances the center of the data relative to the extremities. Taping the periodogram with 20% gives us better insight in the data and shows a clear solid cycle at 10.43 years.   
+
+## 7.6
+
+```{r}
+spec.ar(sunspotz)
+```
+
+
+```{r}
+n = length(sunspotz)
+c() -> AIC -> BIC
+for (k in 1:30){
+  sigma2 = ar(sunspotz, order=k,aic=FALSE)$var.pred
+  BIC[k] = log(sigma2) + k*log(n)/n
+  AIC[k] = log(sigma2) + (n+2*k)/n
+}
+IC = cbind(AIC,BIC+1)
+ts.plot(IC,type="o",xlab="p",ylab="AIC/BIC")
+Grid()
 ```
